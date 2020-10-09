@@ -1,10 +1,13 @@
 import tensorflow as tf
 from tensorflow import keras
-import argparse
+import scipy.stats as stats
+from keras import backend as K
+from keras.engine.topology import Layer
 
-# Attention layer for keras
-# You just need to define the call and build in keras and backprop is taken care by the keras
-
+""" 
+Attention mechanism as given in SimGNN
+Initilizer : ( GlorotNormal ) https://keras.io/api/layers/initializers/
+"""
 
 class Attention(keras.layers.Layer):
     def __init__(self, args):
@@ -12,19 +15,20 @@ class Attention(keras.layers.Layer):
         self.args = args
 
     def build(self, input_shape):
+        xavier_uniform = keras.initializers.GlorotNormal(seed=None)
         self.weights_att = self.add_weight(
         shape=(self.args.filters_3,self.args.filters_3),
-        initializer="random_normal",
+        initializer=xavier_uniform,
         trainable=True)
         super(Attention, self).build(input_shape);
 
     def call(self, embedding):
-        printshapes = True
+        printshapes = False
         g_input = keras.backend.dot(embedding, self.weights_att)
         global_context = keras.backend.mean(g_input, axis=0)
-        nl_global_context = tf.keras.activations.tanh(global_context)
+        nl_global_context = keras.activations.tanh(global_context)
         nl_global_context = tf.reshape(nl_global_context, [1,-1])
-        sig_scores = tf.keras.activations.sigmoid(tf.matmul(embedding, keras.backend.transpose(tf.convert_to_tensor(nl_global_context))))
+        sig_scores = keras.activations.sigmoid(tf.matmul(embedding, keras.backend.transpose(tf.convert_to_tensor(nl_global_context))))
         embedd = keras.backend.transpose(tf.matmul(keras.backend.transpose(embedding), sig_scores))
         if printshapes == True:
             print("Context before mean is:                ", g_input.shape)
@@ -36,77 +40,55 @@ class Attention(keras.layers.Layer):
 
 
 """
-Current Output is : 
-
-Context before mean is:                 (11, 3)
-Emedding-Shape in attention module is:  (11, 3)
-Global Context shape is:                (1, 3)
-Scores shape is:                        (11, 1)
-Embedding shape is:                     (1, 3)
-Context before mean is:                 (11, 3)
-Emedding-Shape in attention module is:  (11, 3)
-Global Context shape is:                (1, 3)
-Scores shape is:                        (11, 1)
-Embedding shape is:                     (1, 3)
-Model: "sequential"
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-attention (Attention)        (1, 3)                    9         
-=================================================================
-Total params: 9
-Trainable params: 9
-Non-trainable params: 0
-
+Github : https://github.com/dapurv5/keras-neural-tensor-layer
+Credit to repo owner
 """
 
-
-"""
-This comment is for checking and model creation for above layer will be removed layer
-
-from keras.models import Sequential 
-from keras.layers import Dense 
-
-parser = argparse.ArgumentParser(description="Run SimGNN.")
-parser.add_argument("--filters-3",
-                        type=int,
-                        default=3,
-	                help="Filters (neurons) in 3rd convolution. Default is 32.")
-
-model = Sequential() 
-model.add(Attention(parser.parse_args())) 
-y = model(tf.Variable([[-0.1673, -0.0144, -0.0100],
-        [-0.1547, -0.0147, -0.0103],
-        [-0.1414, -0.0155, -0.0064],
-        [-0.1683, -0.0137, -0.0104],
-        [-0.1627, -0.0088, -0.0142],
-        [-0.1891, -0.0147, -0.0127],
-        [-0.1438, -0.0139, -0.0089],
-        [-0.1539, -0.0147, -0.0103],
-        [-0.1445, -0.0121, -0.0104],
-        [-0.1667, -0.0154, -0.0098],
-        [-0.1686, -0.0125, -0.0133]]))
-
-model.summary()
-"""
-"""
-Uncomment to check working of the activation
+class NeuralTensorLayer(Layer):
+  def __init__(self, output_dim, input_dim=None, **kwargs):
+    self.output_dim = output_dim #k
+    self.input_dim = input_dim   #d
+    if self.input_dim:
+      kwargs['input_shape'] = (self.input_dim,)
+    super(NeuralTensorLayer, self).__init__(**kwargs)
 
 
-x = Attention(parser.parse_args())
-
-y = x(tf.Variable([[-0.1673, -0.0144, -0.0100],
-        [-0.1547, -0.0147, -0.0103],
-        [-0.1414, -0.0155, -0.0064],
-        [-0.1683, -0.0137, -0.0104],
-        [-0.1627, -0.0088, -0.0142],
-        [-0.1891, -0.0147, -0.0127],
-        [-0.1438, -0.0139, -0.0089],
-        [-0.1539, -0.0147, -0.0103],
-        [-0.1445, -0.0121, -0.0104],
-        [-0.1667, -0.0154, -0.0098],
-        [-0.1686, -0.0125, -0.0133]]))
-print(y)
+  def build(self, input_shape):
+    mean = 0.0
+    std = 1.0
+    # W : k*d*d
+    k = self.output_dim
+    d = self.input_dim
+    initial_W_values = stats.truncnorm.rvs(-2 * std, 2 * std, loc=mean, scale=std, size=(k,d,d))
+    initial_V_values = stats.truncnorm.rvs(-2 * std, 2 * std, loc=mean, scale=std, size=(2*d,k))
+    self.W = K.variable(initial_W_values)
+    self.V = K.variable(initial_V_values)
+    self.b = K.zeros((self.input_dim,))
+    self.trainable_weights2 = [self.W, self.V, self.b]
 
 
-"""
+  def call(self, inputs, mask=None):
+    if type(inputs) is not list or len(inputs) <= 1:
+      raise Exception('BilinearTensorLayer must be called on a list of tensors '
+                      '(at least 2). Got: ' + str(inputs))
+    e1 = inputs[0]
+    e2 = inputs[1]
+    batch_size = K.shape(e1)[0]
+    k = self.output_dim
+    # print([e1,e2])
+    feed_forward_product = K.dot(K.concatenate([e1,e2]), self.V)
+    # print(feed_forward_product)
+    bilinear_tensor_products = [ K.sum((e2 * K.dot(e1, self.W[0])) + self.b, axis=1) ]
+    # print(bilinear_tensor_products)
+    for i in range(k)[1:]:
+      btp = K.sum((e2 * K.dot(e1, self.W[i])) + self.b, axis=1)
+      bilinear_tensor_products.append(btp)
+    result = K.tanh(K.reshape(K.concatenate(bilinear_tensor_products, axis=0), (batch_size, k)) + feed_forward_product)
+    # print(result)
+    return result
+
+
+  def compute_output_shape(self, input_shape):
+    # print (input_shape)
+    batch_size = input_shape[0][0]
+    return (batch_size, self.output_dim)

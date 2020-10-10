@@ -36,8 +36,7 @@ class Attention(keras.layers.Layer):
             print("Global Context shape is:               ", nl_global_context.shape)
             print("Scores shape is:                       ", sig_scores.shape)
             print("Embedding shape is:                    ", embedd.shape)
-        return nl_global_context
-
+        return embedd
 
 """
 Github : https://github.com/dapurv5/keras-neural-tensor-layer

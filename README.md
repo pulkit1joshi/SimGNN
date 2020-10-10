@@ -1,6 +1,9 @@
 # SimGNN
 
-A Keras implementation of **SimGNN: A Neural Network Approach to Fast Graph Similarity Computation*** [Link](https://arxiv.org/abs/1808.05689).
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/graph-edit-distance-computation-via-graph/graph-similarity-on-imdb)](https://paperswithcode.com/sota/graph-similarity-on-imdb?p=graph-edit-distance-computation-via-graph)
+[![codebeat badge](https://codebeat.co/badges/8678ae0a-67d3-423b-830d-050ed726e4eb)](https://codebeat.co/projects/github-com-pulkit1joshi-simgnn-main)
+
+Keras implementation of **SimGNN: A Neural Network Approach to Fast Graph Similarity Computation*** 
 
 ![image](https://user-images.githubusercontent.com/42002993/95562734-2c25fc80-0a3a-11eb-9438-d0b1c7c49d63.png)
 
@@ -9,6 +12,8 @@ Graph similarity search is among the most important graph-based applications, e.
 
 
 Medium article on SimGNN: [Link](https://medium.com/swlh/simgnn-56420a66fa37).
+
+Paper can be found here: [Link](https://arxiv.org/abs/1808.05689).
 
 *This includes only upper layer ( Attension mechanism implementation )
 

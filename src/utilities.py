@@ -52,8 +52,8 @@ class data2:
     def create_batches(self):
         random.shuffle(self.training_graphs)
         batches = []
-        for graph in range(0, len(self.training_graphs), 128):
-            batches.append(self.training_graphs[graph:graph+128])
+        for graph in range(0, len(self.training_graphs), 5):
+            batches.append(self.training_graphs[graph:graph+5])
         return batches
 
 
@@ -95,6 +95,8 @@ def convert_to_keras(data, global_labels):
         transformed_data["features_1"] = features_1
         transformed_data["features_2"] = features_2
         norm_ged = data["ged"]/(0.5*(len(data["labels_1"])+len(data["labels_2"])))
+        #print(norm_ged.shape)
         transformed_data["target"] = tf.reshape(tf.convert_to_tensor(np.exp(-norm_ged).reshape(1, 1)),-1)
+        #print(transformed_data["target"].shape)
         return transformed_data    
 

@@ -25,7 +25,7 @@ def parameter_parser():
 
     parser.add_argument("--epochs",
                         type=int,
-                        default=1,
+                        default=1000,
 	                help="Number of training epochs. Default is 5.")
 
     """
@@ -33,7 +33,7 @@ def parameter_parser():
     """
     parser.add_argument("--filters-1",
                         type=int,
-                        default=128,
+                        default=64,
 	                help="Filters (neurons) in 1st convolution. Default is 128.")
 
     """
@@ -41,7 +41,7 @@ def parameter_parser():
     """
     parser.add_argument("--filters-2",
                         type=int,
-                        default=64,
+                        default=32,
 	                help="Filters (neurons) in 2nd convolution. Default is 64.")
 
     """
@@ -49,7 +49,7 @@ def parameter_parser():
     """
     parser.add_argument("--filters-3",
                         type=int,
-                        default=32,
+                        default=16,
 	                help="Filters (neurons) in 3rd convolution. Default is 32.")
 
     parser.add_argument("--learning-rate",
@@ -62,6 +62,9 @@ def parameter_parser():
                         default=5*10**-4,
 	                help="Adam weight decay. Default is 5*10^-4.")
 
-
+    parser.add_argument("--saveafter",
+                        type=int,
+                        default=50,
+	                help="Saves model after every argument epochs")
 
     return parser.parse_args()

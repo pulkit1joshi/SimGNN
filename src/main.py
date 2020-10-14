@@ -12,12 +12,11 @@ parser = parameter_parser()
 def train(model, x):
     batches = x.create_batches()
     global_labels = x.getlabels()
-    print(global_labels)
     """
     Training the Network
     Take every graph pair and train it as a batch.
     """
-
+    t_x = x
     for epoch in range(0,parser.epochs):
         for index, batch in tqdm(enumerate(batches), total=len(batches), desc="Batches"):
             for graph_pair in batch:
@@ -28,6 +27,9 @@ def train(model, x):
                 a = np.array([ data["edge_index_1"] ])
                 b = np.array([ data["edge_index_2"] ])
                 model.train_on_batch([x, a, y, b], data["target"])
+        if epoch%(parser.saveafter) == 0:
+            model.save("train")
+            print("saved")
 
 def test(model, x):
     global_labels = x.getlabels()
@@ -46,28 +48,30 @@ def test(model, x):
         scores.append(find_loss(y, data["target"]))
 
     norm_ged_mean = np.mean(g_truth)
-    base_error = np.mean([(n-norm_ged_mean)**2 for n in g_truth])
     model_error = np.mean(scores)
-    print("\nBaseline error: " +str(round(base_error, 5))+".")
     print("\nModel test error: " +str(round(model_error, 5))+".")
 
 def main():
     model = simgnn(parser);
     opt = keras.optimizers.Adadelta(learning_rate=parser.learning_rate, rho=parser.weight_decay)
+    #opt = keras.optimizers.Adam(learning_rate=parser.learning_rate)
     model.compile(
                 optimizer=opt,
-                loss='mean_squared_error',
-                metrics=['mean_squared_error'],
+                loss='mse',
+                metrics=[keras.metrics.MeanSquaredError()],
             )
     model.summary()
-    """ 
+    """"
     x : Data loading
     train used to train
     test over the test data
     """
+    model = keras.models.load_model('train')
     x = data2()
-    train(model,x)
     test(model, x)
+    train(model, x)
+    test(model, x)
+    #model.save('./models')
 
 
 if __name__ == "__main__":

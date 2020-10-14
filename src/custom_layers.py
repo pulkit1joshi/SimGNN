@@ -17,6 +17,7 @@ class Attention(keras.layers.Layer):
     def build(self, input_shape):
         xavier_uniform = keras.initializers.GlorotNormal(seed=None)
         self.weights_att = self.add_weight(
+        name="att_weight",
         shape=(self.args.filters_3,self.args.filters_3),
         initializer=xavier_uniform,
         trainable=True)

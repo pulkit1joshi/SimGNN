@@ -18,4 +18,6 @@ Tensorflow implementation from author: [Link](https://github.com/yunshengb/SimGN
 
 Another Implementation: [Link](https://github.com/benedekrozemberczki/SimGNN)
 
-Added **Synthetic Data**
+**Recent**
+Added **Synthetic Data**.
+Made parameters even with paper.

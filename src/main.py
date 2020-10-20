@@ -45,7 +45,10 @@ def test(model, x):
     for graph_pair in tqdm(test):
         data = process(graph_pair)
         data = convert_to_keras(data, global_labels)
-        x, y, a, b = [ np.array([ data["features_1"] ]), np.array([ data["features_2"] ]), np.array([ data["edge_index_1"] ]), np.array([ data["edge_index_2"] ]) ]
+        x = np.array([ data["features_1"] ])
+        y = np.array([ data["features_2"] ])
+        a = np.array([ data["edge_index_1"] ])
+        b = np.array([ data["edge_index_2"] ])
         g_truth.append(data["target"])
         y=model.predict([x, a, y, b])
         scores.append(find_loss(y, data["target"]))

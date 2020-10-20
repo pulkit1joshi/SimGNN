@@ -64,7 +64,7 @@ def parameter_parser():
 
     parser.add_argument("--saveafter",
                         type=int,
-                        default=1,
+                        default=30,
 	                help="Saves model after every argument epochs")
 
     return parser.parse_args()

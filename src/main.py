@@ -33,16 +33,12 @@ def train(model, x):
                 a = np.array([ data["edge_index_1"] ])
                 b = np.array([ data["edge_index_2"] ])
                 p = model.train_on_batch([x, a, y, b], data["target"])
-                #traintest(model, t_x, data)
-        if epoch%(parser.saveafter+5) == 0:
-                z = test(model, t_x)
-                print("Change in error:")
-                print(last-z)
+        if epoch%(parser.saveafter) == 0:
                 print("Train Error:")
                 print(p)
                 last=z
-        if epoch%(parser.saveafter) == 0:
                 model.save("train")
+                model.save_weights("xweights")
                 
             #print("saved")
 
@@ -105,11 +101,10 @@ def main():
     test over the test data
     """
     model = keras.models.load_model('train', custom_objects={'Attention': Attention, 'NeuralTensorLayer': NeuralTensorLayer, "GraphConv": GraphConv})
-    #model.save_weights("xweights.h5")
-    #model.load_weights("xweights.h5")
     K.set_value(model.optimizer.lr, parser.learning_rate)
     K.set_value(model.optimizer.decay, parser.weight_decay)
     x = data2()
+    z = test(model, x)
     train(model, x)
     test(model, x)
 

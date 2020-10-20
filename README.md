@@ -20,4 +20,4 @@ Another Implementation: [Link](https://github.com/benedekrozemberczki/SimGNN)
 
 ![image](https://github.com/pulkit1joshi/SimGNN/blob/main/Training.png)
 
-Above results on test data were obtained when trained on synthetic data (200 epochs) with training loss of order 10^-4.
+Above results on test data, that is error of order 8 x 10^-3, were obtained when trained on synthetic data (200 epochs) with training loss of order 10^-4.

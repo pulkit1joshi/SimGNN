@@ -1,4 +1,3 @@
-""" Main SimGNN model """
 from tensorflow import keras
 from keras import backend as K
 from keras_gcn import GraphConv
@@ -33,7 +32,6 @@ def train(model, x):
         if epoch%(parser.saveafter) == 0:
                 print("Train Error:")
                 print(p)
-                last=z
                 model.save("train")
                 model.save_weights("xweights")
 
@@ -74,9 +72,6 @@ def main():
     train used to train
     test over the test data
     """
-    model = keras.models.load_model('train', custom_objects={'Attention': Attention, 'NeuralTensorLayer': NeuralTensorLayer, "GraphConv": GraphConv})
-    K.set_value(model.optimizer.lr, parser.learning_rate)
-    K.set_value(model.optimizer.decay, parser.weight_decay)
     x = data2()
     train(model, x)
     test(model, x)

@@ -18,6 +18,6 @@ Tensorflow implementation from author: [Link](https://github.com/yunshengb/SimGN
 
 Another Implementation: [Link](https://github.com/benedekrozemberczki/SimGNN)
 
-**Recent**
-Added **Synthetic Data**.
-Made parameters even with paper.
+![image](https://github.com/pulkit1joshi/SimGNN/blob/main/Training.png)
+
+Above results on test data were obtained when trained on synthetic data (200 epochs) with training loss of order 10^-4.

@@ -25,7 +25,7 @@ def parameter_parser():
 
     parser.add_argument("--epochs",
                         type=int,
-                        default=1000,
+                        default=100,
 	                help="Number of training epochs. Default is 5.")
 
     """
@@ -59,12 +59,12 @@ def parameter_parser():
 
     parser.add_argument("--weight-decay",
                         type=float,
-                        default=5*10**-4,
+                        default=10**-4,
 	                help="Adam weight decay. Default is 5*10^-4.")
 
     parser.add_argument("--saveafter",
                         type=int,
-                        default=50,
+                        default=30,
 	                help="Saves model after every argument epochs")
 
     return parser.parse_args()

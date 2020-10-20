@@ -12,8 +12,8 @@ def find_loss(prediction, target):
     """
     Calculating the squared loss on the normalized GED.
     """
-    prediction = -math.log(prediction)
-    target = -math.log(target)
+    prediction = prediction
+    target = target
     score = (prediction-target)**2
     return score
 
@@ -40,6 +40,9 @@ class data2:
         self.global_labels = list(self.global_labels)
         self.global_labels = {val:index  for index, val in enumerate(self.global_labels)}
         self.number_of_labels = len(self.global_labels)
+        #print("Number of labels:")
+        #print(self.number_of_labels)
+        #print(self.global_labels)
     
     def getlabels(self):
         return self.global_labels
@@ -50,10 +53,10 @@ class data2:
     def gettest(self):
         return self.testing_graphs
     def create_batches(self):
-        random.shuffle(self.training_graphs)
+        #random.shuffle(self.training_graphs)
         batches = []
-        for graph in range(0, len(self.training_graphs), 5):
-            batches.append(self.training_graphs[graph:graph+5])
+        for graph in range(0, len(self.training_graphs), 128):
+            batches.append(self.training_graphs[graph:graph+128])
         return batches
 
 
@@ -100,3 +103,4 @@ def convert_to_keras(data, global_labels):
         #print(transformed_data["target"].shape)
         return transformed_data    
 
+x = data2()

@@ -2,7 +2,7 @@
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/graph-edit-distance-computation-via-graph/graph-similarity-on-imdb)](https://paperswithcode.com/sota/graph-similarity-on-imdb?p=graph-edit-distance-computation-via-graph)
 [![codebeat badge](https://codebeat.co/badges/8678ae0a-67d3-423b-830d-050ed726e4eb)](https://codebeat.co/projects/github-com-pulkit1joshi-simgnn-main)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-no-red.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 
 Keras implementation of **SimGNN: A Neural Network Approach to Fast Graph Similarity Computation*** 
